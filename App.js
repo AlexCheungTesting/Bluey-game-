@@ -1,8 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
-const EMOJIS = ['💙', '🧡', '🧔', '👩', '🩵', '🐾'];
+const IMAGES = [
+  require('./assets/images/Bingo.png'),
+  require('./assets/images/Bluey.png'),
+  require('./assets/images/BlueyDad.png'),
+  require('./assets/images/BlueyFam.jpg'),
+  require('./assets/images/BlueyMom.png'),
+  require('./assets/images/Muffin-2.png'),
+];
 
 const shuffleArray = (array) => {
   const newArr = [...array];
@@ -20,7 +27,7 @@ export default function App() {
   const [lockBoard, setLockBoard] = useState(false);
 
   useEffect(() => {
-    const initialCards = [...EMOJIS, ...EMOJIS].map((emoji, id) => ({ id, emoji }));
+    const initialCards = [...IMAGES, ...IMAGES].map((imageSource, id) => ({ id, imageSource }));
     setCards(shuffleArray(initialCards));
   }, []);
 
@@ -35,7 +42,7 @@ export default function App() {
       setLockBoard(true);
       const [firstIndex, secondIndex] = newSelected;
 
-      if (cards[firstIndex].emoji === cards[secondIndex].emoji) {
+      if (cards[firstIndex].imageSource === cards[secondIndex].imageSource) {
         setMatchedCards((prev) => [...prev, firstIndex, secondIndex]);
         setSelectedCards([]);
         setLockBoard(false);
@@ -64,9 +71,9 @@ export default function App() {
               onPress={() => handleCardPress(index)}
               activeOpacity={0.8}
             >
-              <Text style={styles.cardText}>
-                {isFlipped ? card.emoji : ''}
-              </Text>
+              {isFlipped ? (
+                <Image source={card.imageSource} style={styles.cardImage} />
+              ) : null}
             </TouchableOpacity>
           );
         })}
@@ -115,5 +122,10 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 32,
+  },
+  cardImage: {
+    width: '80%',
+    height: '80%',
+    resizeMode: 'contain',
   },
 });
