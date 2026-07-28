@@ -73,7 +73,11 @@ export default function App() {
   };
 
   return (
-    <ImageBackground style={styles.container} source={require('./assets/images/Bluey-background1.png')} resizeMode="cover">
+    <ImageBackground
+      style={styles.container}
+      source={isVictory ? require('./assets/images/Bluey-background2.png') : require('./assets/images/Bluey-background1.png')}
+      resizeMode="cover"
+    >
       {isVictory ? (
         <View style={styles.victoryContainer}>
           <Text style={styles.victoryText}>Hooray! You matched them all! 🎉</Text>
