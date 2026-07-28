@@ -31,6 +31,16 @@ export default function App() {
     setCards(shuffleArray(initialCards));
   }, []);
 
+  const isVictory = cards.length > 0 && matchedCards.length === cards.length;
+
+  const handleReplay = () => {
+    setMatchedCards([]);
+    setSelectedCards([]);
+    setLockBoard(false);
+    const initialCards = [...IMAGES, ...IMAGES].map((imageSource, id) => ({ id, imageSource }));
+    setCards(shuffleArray(initialCards));
+  };
+
   const handleCardPress = (index) => {
     if (lockBoard) return;
     if (selectedCards.includes(index) || matchedCards.includes(index)) return;
@@ -58,26 +68,35 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Memory Game</Text>
-      <View style={styles.board}>
-        {cards.map((card, index) => {
-          const isFlipped = selectedCards.includes(index) || matchedCards.includes(index);
-          return (
-            <TouchableOpacity
-              key={card.id}
-              style={[
-                styles.card,
-                isFlipped ? styles.cardFlipped : styles.cardHidden
-              ]}
-              onPress={() => handleCardPress(index)}
-              activeOpacity={0.8}
-            >
-              {isFlipped ? (
-                <Image source={card.imageSource} style={styles.cardImage} />
-              ) : null}
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      {isVictory ? (
+        <View style={styles.victoryContainer}>
+          <Text style={styles.victoryText}>Hooray! You matched them all! 🎉</Text>
+          <TouchableOpacity style={styles.replayButton} onPress={handleReplay}>
+            <Text style={styles.replayButtonText}>Replay</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.board}>
+          {cards.map((card, index) => {
+            const isFlipped = selectedCards.includes(index) || matchedCards.includes(index);
+            return (
+              <TouchableOpacity
+                key={card.id}
+                style={[
+                  styles.card,
+                  isFlipped ? styles.cardFlipped : styles.cardHidden
+                ]}
+                onPress={() => handleCardPress(index)}
+                activeOpacity={0.8}
+              >
+                {isFlipped ? (
+                  <Image source={card.imageSource} style={styles.cardImage} />
+                ) : null}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      )}
       <StatusBar style="auto" />
     </View>
   );
@@ -127,5 +146,33 @@ const styles = StyleSheet.create({
     width: '80%',
     height: '80%',
     resizeMode: 'contain',
+  },
+  victoryContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  victoryText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#333',
+  },
+  replayButton: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  replayButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
