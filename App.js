@@ -27,6 +27,7 @@ export default function App() {
   const boardWidth = Math.max(Math.min(safeWidth, 650), 300);
 
   const cardWidth = Math.max(Math.floor(boardWidth * 0.23), 10);
+  const cardHeight = cardWidth * 1.25;
   const cardMargin = Math.max(Math.floor(boardWidth * 0.01), 1);
 
   const [cards, setCards] = useState([]);
@@ -95,7 +96,7 @@ export default function App() {
                 key={card.id}
                 style={[
                   styles.card,
-                  { width: cardWidth, aspectRatio: 0.8, margin: cardMargin },
+                  { width: cardWidth, height: cardHeight, margin: cardMargin },
                   isFlipped ? styles.cardFlipped : styles.cardHidden
                 ]}
                 onPress={() => handleCardPress(index)}
