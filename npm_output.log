@@ -10,9 +10,5 @@ Your project may not work correctly until you install the expected versions of t
 Waiting on http://localhost:8081
 Logs for your project will appear below.
 Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
-Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 73.7% (152/177)
-Web Bundled 6399ms index.js (220 modules)
- LOG  [web] Logs will appear in the browser console
-Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
-Web Bundled 16ms index.js (1 module)
+Web Bundled 1437ms index.js (217 modules)
  LOG  [web] Logs will appear in the browser console
