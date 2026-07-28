@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground } from 'react-native';
 
 const IMAGES = [
   require('./assets/images/Bingo.png'),
@@ -66,7 +66,7 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground style={styles.container} source={require('./assets/images/Bluey-background1.png')} resizeMode="cover">
       <Text style={styles.title}>Memory Game</Text>
       {isVictory ? (
         <View style={styles.victoryContainer}>
@@ -98,21 +98,27 @@ export default function App() {
         </View>
       )}
       <StatusBar style="auto" />
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    width: '100%',
+    height: '100%',
+    paddingTop: 60,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#ffffff',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   board: {
     flexDirection: 'row',
@@ -157,7 +163,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#333',
+    color: '#ffffff',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   replayButton: {
     backgroundColor: '#4CAF50',
