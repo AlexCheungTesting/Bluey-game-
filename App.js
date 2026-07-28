@@ -21,12 +21,33 @@ const shuffleArray = (array) => {
 };
 
 export default function App() {
-  const { width } = useWindowDimensions();
-  const boardWidth = Math.min(width, 460);
+  const { width, height } = useWindowDimensions();
+
+  // Landscape logic
+  const isLandscape = width > height;
+
+  const boardWidth = Math.min(width, 650);
   const innerBoardWidth = boardWidth - 10; // Account for paddingHorizontal: 5
-  const cardWidth = Math.floor(innerBoardWidth * 0.21);
   const cardMargin = Math.floor(innerBoardWidth * 0.02);
-  const cardHeight = Math.floor(cardWidth * (135 / 105));
+
+  let cardWidth = Math.floor((innerBoardWidth - (cardMargin * 8)) / 4);
+
+  if (isLandscape) {
+    // In landscape, we have 3 rows. The height of 3 rows + margins + padding (50px top) must fit.
+    // Each card's height is cardWidth / 0.8 (since aspectRatio is 0.8).
+    // Total vertical space needed for cards: 3 * (cardHeight + cardMargin * 2) + 50
+    // So: 3 * ((cardWidth / 0.8) + cardMargin * 2) + 50 <= height
+    // (cardWidth / 0.8) + cardMargin * 2 <= (height - 50) / 3
+    // cardWidth / 0.8 <= ((height - 50) / 3) - (cardMargin * 2)
+    // cardWidth <= (((height - 50) / 3) - (cardMargin * 2)) * 0.8
+
+    const maxCardHeight = ((height - 50) / 3) - (cardMargin * 2);
+    const constrainedWidth = Math.floor(maxCardHeight * 0.8);
+    cardWidth = Math.min(cardWidth, constrainedWidth);
+  }
+
+  // Calculate the strict container width based on the final cardWidth to ensure exactly 4 cards fit per row.
+  const strictBoardWidth = (cardWidth * 4) + (cardMargin * 8) + 10; // +10 for paddingHorizontal: 5
 
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
@@ -86,7 +107,7 @@ export default function App() {
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={styles.board}>
+        <View style={[styles.board, { width: strictBoardWidth }]}>
           {cards.map((card, index) => {
             const isFlipped = selectedCards.includes(index) || matchedCards.includes(index);
             return (
@@ -94,7 +115,7 @@ export default function App() {
                 key={card.id}
                 style={[
                   styles.card,
-                  { width: cardWidth, height: cardHeight, margin: cardMargin },
+                  { width: cardWidth, aspectRatio: 0.8, margin: cardMargin },
                   isFlipped ? styles.cardFlipped : styles.cardHidden
                 ]}
                 onPress={() => handleCardPress(index)}
@@ -125,8 +146,8 @@ const styles = StyleSheet.create({
   board: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: '100%',
-    maxWidth: 460,
+    // width is dynamically set inline to strictBoardWidth to strictly lock 4 columns
+    alignSelf: 'center',
     justifyContent: 'center',
     paddingHorizontal: 5,
   },
