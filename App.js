@@ -67,7 +67,6 @@ export default function App() {
 
   return (
     <ImageBackground style={styles.container} source={require('./assets/images/Bluey-background1.png')} resizeMode="cover">
-      <Text style={styles.title}>Memory Game</Text>
       {isVictory ? (
         <View style={styles.victoryContainer}>
           <Text style={styles.victoryText}>Hooray! You matched them all! 🎉</Text>
@@ -107,37 +106,30 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    paddingTop: 60,
+    paddingTop: 50,
     alignItems: 'center',
     justifyContent: 'flex-start',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#ffffff',
-    textShadowColor: '#000',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
   },
   board: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 380,
+    width: '100%',
+    maxWidth: 460,
     justifyContent: 'center',
+    paddingHorizontal: 5,
   },
   card: {
-    width: 84,
-    height: 108,
-    margin: 5,
+    width: '21%',
+    aspectRatio: 105 / 135,
+    margin: '2%',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 5,
   },
   cardHidden: {
     backgroundColor: '#333',
@@ -173,11 +165,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 15,
     borderRadius: 10,
-    elevation: 3,
+    elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
   },
   replayButtonText: {
     color: '#fff',
