@@ -22,11 +22,10 @@ const shuffleArray = (array) => {
 
 export default function App() {
   const { width } = useWindowDimensions();
-  const boardWidth = Math.min(width, 460);
+  const boardWidth = Math.min(width, 650);
   const innerBoardWidth = boardWidth - 10; // Account for paddingHorizontal: 5
-  const cardWidth = Math.floor(innerBoardWidth * 0.21);
   const cardMargin = Math.floor(innerBoardWidth * 0.02);
-  const cardHeight = Math.floor(cardWidth * (135 / 105));
+  const cardWidth = Math.floor((innerBoardWidth - (cardMargin * 8)) / 4);
 
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
@@ -94,7 +93,7 @@ export default function App() {
                 key={card.id}
                 style={[
                   styles.card,
-                  { width: cardWidth, height: cardHeight, margin: cardMargin },
+                  { width: cardWidth, aspectRatio: 0.8, margin: cardMargin },
                   isFlipped ? styles.cardFlipped : styles.cardHidden
                 ]}
                 onPress={() => handleCardPress(index)}
@@ -126,7 +125,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    maxWidth: 460,
+    maxWidth: 650,
+    alignSelf: 'center',
     justifyContent: 'center',
     paddingHorizontal: 5,
   },
