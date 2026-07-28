@@ -46,6 +46,9 @@ export default function App() {
     cardWidth = Math.min(cardWidth, constrainedWidth);
   }
 
+  // Calculate the strict container width based on the final cardWidth to ensure exactly 4 cards fit per row.
+  const strictBoardWidth = (cardWidth * 4) + (cardMargin * 8) + 10; // +10 for paddingHorizontal: 5
+
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
@@ -104,7 +107,7 @@ export default function App() {
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={styles.board}>
+        <View style={[styles.board, { width: strictBoardWidth }]}>
           {cards.map((card, index) => {
             const isFlipped = selectedCards.includes(index) || matchedCards.includes(index);
             return (
@@ -143,8 +146,7 @@ const styles = StyleSheet.create({
   board: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: '100%',
-    maxWidth: 650,
+    // width is dynamically set inline to strictBoardWidth to strictly lock 4 columns
     alignSelf: 'center',
     justifyContent: 'center',
     paddingHorizontal: 5,
