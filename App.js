@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, useWindowDimensions } from 'react-native';
 
 const IMAGES = [
   require('./assets/images/Bingo.png'),
@@ -21,6 +21,13 @@ const shuffleArray = (array) => {
 };
 
 export default function App() {
+  const { width } = useWindowDimensions();
+  const boardWidth = Math.min(width, 460);
+  const innerBoardWidth = boardWidth - 10; // Account for paddingHorizontal: 5
+  const cardWidth = Math.floor(innerBoardWidth * 0.21);
+  const cardMargin = Math.floor(innerBoardWidth * 0.02);
+  const cardHeight = Math.floor(cardWidth * (135 / 105));
+
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
@@ -66,8 +73,11 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Memory Game</Text>
+    <ImageBackground
+      style={styles.container}
+      source={isVictory ? require('./assets/images/Bluey-background2.png') : require('./assets/images/Bluey-background1.png')}
+      resizeMode="cover"
+    >
       {isVictory ? (
         <View style={styles.victoryContainer}>
           <Text style={styles.victoryText}>Hooray! You matched them all! 🎉</Text>
@@ -84,6 +94,7 @@ export default function App() {
                 key={card.id}
                 style={[
                   styles.card,
+                  { width: cardWidth, height: cardHeight, margin: cardMargin },
                   isFlipped ? styles.cardFlipped : styles.cardHidden
                 ]}
                 onPress={() => handleCardPress(index)}
@@ -98,40 +109,36 @@ export default function App() {
         </View>
       )}
       <StatusBar style="auto" />
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    width: '100%',
+    height: '100%',
+    paddingTop: 50,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    justifyContent: 'flex-start',
   },
   board: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 320,
+    width: '100%',
+    maxWidth: 460,
     justifyContent: 'center',
+    paddingHorizontal: 5,
   },
   card: {
-    width: 70,
-    height: 90,
-    margin: 5,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 5,
   },
   cardHidden: {
     backgroundColor: '#333',
@@ -157,18 +164,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#333',
+    color: '#ffffff',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   replayButton: {
     backgroundColor: '#4CAF50',
     paddingHorizontal: 30,
     paddingVertical: 15,
     borderRadius: 10,
-    elevation: 3,
+    elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
   },
   replayButtonText: {
     color: '#fff',
