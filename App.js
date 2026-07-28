@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, useWindowDimensions } from 'react-native';
 
 const IMAGES = [
   require('./assets/images/Bingo.png'),
@@ -21,6 +21,13 @@ const shuffleArray = (array) => {
 };
 
 export default function App() {
+  const { width } = useWindowDimensions();
+  const boardWidth = Math.min(width, 460);
+  const innerBoardWidth = boardWidth - 10; // Account for paddingHorizontal: 5
+  const cardWidth = Math.floor(innerBoardWidth * 0.21);
+  const cardMargin = Math.floor(innerBoardWidth * 0.02);
+  const cardHeight = Math.floor(cardWidth * (135 / 105));
+
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
@@ -83,6 +90,7 @@ export default function App() {
                 key={card.id}
                 style={[
                   styles.card,
+                  { width: cardWidth, height: cardHeight, margin: cardMargin },
                   isFlipped ? styles.cardFlipped : styles.cardHidden
                 ]}
                 onPress={() => handleCardPress(index)}
@@ -119,9 +127,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   card: {
-    width: '21%',
-    aspectRatio: 105 / 135,
-    margin: '2%',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
