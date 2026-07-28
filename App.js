@@ -158,6 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    flex: 1,
   },
   victoryText: {
     fontSize: 24,
