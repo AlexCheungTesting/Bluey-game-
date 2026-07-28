@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "temp-app",
-    "slug": "temp-app",
+    "name": "Bluey Memory Match",
+    "slug": "bluey-memory-match",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -16,6 +16,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.memorygame.bluey",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
