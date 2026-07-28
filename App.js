@@ -23,31 +23,11 @@ const shuffleArray = (array) => {
 export default function App() {
   const { width, height } = useWindowDimensions();
 
-  // Landscape logic
-  const isLandscape = width > height;
+  const safeWidth = width || 300;
+  const boardWidth = Math.max(Math.min(safeWidth, 650), 300);
 
-  const boardWidth = Math.min(width, 650);
-  const innerBoardWidth = boardWidth - 10; // Account for paddingHorizontal: 5
-  const cardMargin = Math.floor(innerBoardWidth * 0.02);
-
-  let cardWidth = Math.floor((innerBoardWidth - (cardMargin * 8)) / 4);
-
-  if (isLandscape) {
-    // In landscape, we have 3 rows. The height of 3 rows + margins + padding (50px top) must fit.
-    // Each card's height is cardWidth / 0.8 (since aspectRatio is 0.8).
-    // Total vertical space needed for cards: 3 * (cardHeight + cardMargin * 2) + 50
-    // So: 3 * ((cardWidth / 0.8) + cardMargin * 2) + 50 <= height
-    // (cardWidth / 0.8) + cardMargin * 2 <= (height - 50) / 3
-    // cardWidth / 0.8 <= ((height - 50) / 3) - (cardMargin * 2)
-    // cardWidth <= (((height - 50) / 3) - (cardMargin * 2)) * 0.8
-
-    const maxCardHeight = ((height - 50) / 3) - (cardMargin * 2);
-    const constrainedWidth = Math.floor(maxCardHeight * 0.8);
-    cardWidth = Math.min(cardWidth, constrainedWidth);
-  }
-
-  // Calculate the strict container width based on the final cardWidth to ensure exactly 4 cards fit per row.
-  const strictBoardWidth = (cardWidth * 4) + (cardMargin * 8) + 10; // +10 for paddingHorizontal: 5
+  const cardWidth = Math.max(Math.floor(boardWidth * 0.23), 10);
+  const cardMargin = Math.max(Math.floor(boardWidth * 0.01), 1);
 
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
@@ -107,7 +87,7 @@ export default function App() {
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={[styles.board, { width: strictBoardWidth }]}>
+        <View style={[styles.board, { width: boardWidth }]}>
           {cards.map((card, index) => {
             const isFlipped = selectedCards.includes(index) || matchedCards.includes(index);
             return (
