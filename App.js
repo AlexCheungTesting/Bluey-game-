@@ -123,12 +123,12 @@ const styles = StyleSheet.create({
   board: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 320,
+    width: 380,
     justifyContent: 'center',
   },
   card: {
-    width: 70,
-    height: 90,
+    width: 84,
+    height: 108,
     margin: 5,
     borderRadius: 8,
     alignItems: 'center',
