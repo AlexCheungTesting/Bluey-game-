@@ -8,7 +8,7 @@ const IMAGES = [
   require('./assets/images/BlueyDad.png'),
   require('./assets/images/BlueyFam.jpg'),
   require('./assets/images/BlueyMom.png'),
-  require('./assets/images/Muffin-2.png'),
+  require('./assets/images/Muffin.png'),
 ];
 
 const shuffleArray = (array) => {
