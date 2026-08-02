@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, useWindowDimensions } from 'react-native';
+import { Audio } from 'expo-av';
 
 const IMAGES = [
   require('./assets/images/Bingo.png'),
@@ -54,14 +55,92 @@ export default function App() {
   const [matchedCards, setMatchedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
 
+  const bgmSound = useRef(new Audio.Sound());
+  const victoryBgmSound = useRef(new Audio.Sound());
+  const popSound = useRef(new Audio.Sound());
+  const successSound = useRef(new Audio.Sound());
+  const failSound = useRef(new Audio.Sound());
+  const victorySfxSound = useRef(new Audio.Sound());
+
   useEffect(() => {
     const initialCards = [...IMAGES, ...IMAGES].map((imageSource, id) => ({ id, imageSource }));
     setCards(shuffleArray(initialCards));
+
+    let isMounted = true;
+
+    const loadAndPlayBgm = async () => {
+      try {
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+          allowsRecordingIOS: false,
+          staysActiveInBackground: false,
+        });
+
+        await bgmSound.current.loadAsync(require('./assets/soundFX/Memory-bgm1.mp3'));
+        await bgmSound.current.setIsLoopingAsync(true);
+        await bgmSound.current.setVolumeAsync(0.2);
+
+        await victoryBgmSound.current.loadAsync(require('./assets/soundFX/Victory-bgm1.mp3'));
+        await victoryBgmSound.current.setIsLoopingAsync(true);
+        await victoryBgmSound.current.setVolumeAsync(0.3);
+
+        await popSound.current.loadAsync(require('./assets/soundFX/Pop-sfx.mp3'));
+        await popSound.current.setVolumeAsync(1.0);
+
+        await successSound.current.loadAsync(require('./assets/soundFX/Succes-sfx.mp3'));
+        await successSound.current.setVolumeAsync(1.0);
+
+        await failSound.current.loadAsync(require('./assets/soundFX/Fail-sfx.mp3'));
+        await failSound.current.setVolumeAsync(1.0);
+
+        await victorySfxSound.current.loadAsync(require('./assets/soundFX/Victory-sfx.mp3'));
+        await victorySfxSound.current.setVolumeAsync(1.0);
+
+        if (isMounted) {
+          await bgmSound.current.playAsync();
+        }
+      } catch (error) {
+        console.error("Error loading sounds", error);
+      }
+    };
+
+    loadAndPlayBgm();
+
+    return () => {
+      isMounted = false;
+      bgmSound.current.unloadAsync();
+      victoryBgmSound.current.unloadAsync();
+      popSound.current.unloadAsync();
+      successSound.current.unloadAsync();
+      failSound.current.unloadAsync();
+      victorySfxSound.current.unloadAsync();
+    };
   }, []);
 
   const isVictory = cards.length > 0 && matchedCards.length === cards.length;
 
-  const handleReplay = () => {
+  useEffect(() => {
+    const handleVictorySounds = async () => {
+      if (isVictory) {
+        try {
+          await bgmSound.current.stopAsync();
+          await victorySfxSound.current.replayAsync();
+          await victoryBgmSound.current.playAsync();
+        } catch (error) {
+          console.error("Error playing victory sounds", error);
+        }
+      }
+    };
+    handleVictorySounds();
+  }, [isVictory]);
+
+  const handleReplay = async () => {
+    try {
+      await victoryBgmSound.current.stopAsync();
+      await bgmSound.current.playAsync();
+    } catch (error) {
+       console.error("Error replaying bgm", error);
+    }
     setMatchedCards([]);
     setSelectedCards([]);
     setLockBoard(false);
@@ -69,9 +148,19 @@ export default function App() {
     setCards(shuffleArray(initialCards));
   };
 
+  const playSound = async (soundRef) => {
+    try {
+      await soundRef.current.replayAsync();
+    } catch (error) {
+      console.error("Error playing sound", error);
+    }
+  };
+
   const handleCardPress = (index) => {
     if (lockBoard) return;
     if (selectedCards.includes(index) || matchedCards.includes(index)) return;
+
+    playSound(popSound);
 
     const newSelected = [...selectedCards, index];
     setSelectedCards(newSelected);
@@ -81,10 +170,12 @@ export default function App() {
       const [firstIndex, secondIndex] = newSelected;
 
       if (cards[firstIndex].imageSource === cards[secondIndex].imageSource) {
+        playSound(successSound);
         setMatchedCards((prev) => [...prev, firstIndex, secondIndex]);
         setSelectedCards([]);
         setLockBoard(false);
       } else {
+        playSound(failSound);
         setTimeout(() => {
           setSelectedCards([]);
           setLockBoard(false);
