@@ -24,14 +24,17 @@ const shuffleArray = (array) => {
 export default function App() {
   const { width, height } = useWindowDimensions();
 
+  const safeWidth = Math.max(0, width);
+  const safeHeight = Math.max(0, height);
+
   // Landscape logic
-  const isLandscape = width > height;
+  const isLandscape = safeWidth > safeHeight;
 
-  const boardWidth = Math.min(width, 650);
-  const innerBoardWidth = boardWidth - 10; // Account for paddingHorizontal: 5
-  const cardMargin = Math.floor(innerBoardWidth * 0.02);
+  const boardWidth = Math.min(safeWidth, 650);
+  const innerBoardWidth = Math.max(0, boardWidth - 10); // Account for paddingHorizontal: 5
+  const cardMargin = Math.max(0, Math.floor(innerBoardWidth * 0.02));
 
-  let cardWidth = Math.floor((innerBoardWidth - (cardMargin * 8)) / 4);
+  let cardWidth = Math.max(0, Math.floor((innerBoardWidth - (cardMargin * 8)) / 4));
 
   if (isLandscape) {
     // In landscape, we have 3 rows. The height of 3 rows + margins + padding (50px top) must fit.
@@ -42,13 +45,14 @@ export default function App() {
     // cardWidth / 0.8 <= ((height - 50) / 3) - (cardMargin * 2)
     // cardWidth <= (((height - 50) / 3) - (cardMargin * 2)) * 0.8
 
-    const maxCardHeight = ((height - 50) / 3) - (cardMargin * 2);
+    const maxCardHeight = ((safeHeight - 50) / 3) - (cardMargin * 2);
     const constrainedWidth = Math.floor(maxCardHeight * 0.8);
-    cardWidth = Math.min(cardWidth, constrainedWidth);
+    cardWidth = Math.max(0, Math.min(cardWidth, constrainedWidth));
   }
 
   // Calculate the strict container width based on the final cardWidth to ensure exactly 4 cards fit per row.
-  const strictBoardWidth = (cardWidth * 4) + (cardMargin * 8) + 10; // +10 for paddingHorizontal: 5
+  const strictBoardWidth = Math.max(0, (cardWidth * 4) + (cardMargin * 8) + 10); // +10 for paddingHorizontal: 5
+  const cardHeight = Math.floor(cardWidth * 1.25);
 
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
@@ -206,7 +210,7 @@ export default function App() {
                 key={card.id}
                 style={[
                   styles.card,
-                  { width: cardWidth, aspectRatio: 0.8, margin: cardMargin },
+                  { width: cardWidth, height: cardHeight, margin: cardMargin },
                   isFlipped ? styles.cardFlipped : styles.cardHidden
                 ]}
                 onPress={() => handleCardPress(index)}
