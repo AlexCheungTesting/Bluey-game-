@@ -58,6 +58,7 @@ export default function App() {
   const [selectedCards, setSelectedCards] = useState([]);
   const [matchedCards, setMatchedCards] = useState([]);
   const [lockBoard, setLockBoard] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
 
   const bgmSound = useRef(new Audio.Sound());
   const victoryBgmSound = useRef(new Audio.Sound());
@@ -188,13 +189,24 @@ export default function App() {
     }
   };
 
+  const handleStartGame = () => {
+    playSound(successSound);
+    setGameStarted(true);
+  };
+
   return (
     <ImageBackground
       style={styles.container}
       source={isVictory ? require('./assets/images/Bluey-background2.png') : require('./assets/images/Bluey-background1.png')}
       resizeMode="cover"
     >
-      {isVictory ? (
+      {!gameStarted ? (
+        <View style={styles.startContainer}>
+          <TouchableOpacity style={styles.startButton} onPress={handleStartGame}>
+            <Text style={styles.startButtonText}>Start Memory game</Text>
+          </TouchableOpacity>
+        </View>
+      ) : isVictory ? (
         <View style={styles.victoryContainer}>
           <Text style={styles.victoryText}>Hooray! You matched them all! 🎉</Text>
           <TouchableOpacity style={styles.replayButton} onPress={handleReplay}>
@@ -300,6 +312,28 @@ const styles = StyleSheet.create({
   replayButtonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  startContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  startButton: {
+    backgroundColor: '#FFC107',
+    paddingHorizontal: 40,
+    paddingVertical: 20,
+    borderRadius: 15,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+  },
+  startButtonText: {
+    color: '#333',
+    fontSize: 22,
     fontWeight: 'bold',
   },
 });
